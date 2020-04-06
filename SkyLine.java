@@ -30,25 +30,26 @@ public class SkyLine {
 		ArrayList<Point> skyline = new ArrayList<Point>();
 		int curH1=0, curH2=0, curX=0;
 		while(!sl1.isEmpty() && !sl2.isEmpty()){
-			if( sl1.get(sl1.size()-1).x < sl2.get(sl1.size()-1).x ){
-				curX = sl1.get(sl1.size()-1).x;
-				curH1 = sl1.get(sl1.size()-1).y;
-				sl1.remove(sl1.size()-1);
+			if( sl1.get(0).x < sl2.get(0).x ){
+				curX = sl1.get(0).x;
+				curH1 = sl1.get(0).y;
+				sl1.remove(0);
 				skyline.add(new Point(curX, Math.max(curH1, curH2)));
 			}else{
-				curX = sl2.get(sl2.size()-1).x;
-				curH1 = sl2.get(sl2.size()-1).y;
-				sl2.remove(sl1.size()-1);
+				curX = sl2.get(0).x;
+				curH2 = sl2.get(0).y;
+				sl2.remove(0);
 				skyline.add(new Point(curX, Math.max(curH1, curH2)));
 			}
+			
 		}
 		if(sl1.isEmpty()){
 			skyline.addAll(sl2);
 		}else if(sl2.isEmpty()){
 			skyline.addAll(sl1);
 		}
+        	removeRedundant(skyline);
 		return skyline;
-		
 	}
 
 	public static class Building{
@@ -70,5 +71,22 @@ public class SkyLine {
 			this.y = y;
 		}
 	}
+	
+	// Remove redundant points 
+    	private static void removeRedundant(List<Point> points) {
+		for (int i = points.size() - 1; i > 0; i--) {
+		    Point rightPoint = points.get(i);
+		    Point leftPoint = points.get(i - 1);
+
+		    boolean heightEquality = rightPoint.y == leftPoint.y;
+		    boolean leftEquality = rightPoint.x == leftPoint.x;
+
+		    if (leftEquality && !heightEquality)
+			leftPoint.y = Math.max(rightPoint.y, leftPoint.y);
+
+		    if (leftEquality || heightEquality)
+			points.remove(i);
+		}
+    	}
 }
 
